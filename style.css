@@ -1,0 +1,30 @@
+body {
+  display: flexbox;
+}
+
+section {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#score-board article {
+display: flex;
+justify-content: center;
+padding: 20px;
+}
+
+#grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 10px;
+  background-color: #2196F3;
+  padding: 10px;
+}
+
+#grid-container div{
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 40px 60px;
+  font-size: 30px;
+  }
