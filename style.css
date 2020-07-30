@@ -27,4 +27,8 @@ padding: 20px;
   text-align: center;
   padding: 40px 60px;
   font-size: 30px;
-  }
+}
+
+.win {
+    color: green;
+}

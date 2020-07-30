@@ -28,11 +28,17 @@ function TicTacToeGame(){
 	//function to controls turns between the players
 
 	function takeTurn() {
+
+		//stopping players to take another turn when the game is over.
+		if (board.checkWinner()) {
+			return;  
+		}
+
 		if (turn % 2 === 0) {
-		human.takeTurn();
-	} else {
-		computer.takeTurn();
-	}
+			human.takeTurn();
+		} else {
+			computer.takeTurn();
+		}
 
 	turn++;
 
@@ -47,16 +53,66 @@ function TicTacToeGame(){
 function Board(){
   	// tracking board positions
   this.positions = Array.from(document.querySelectorAll('.grid-item'));
+
+  // checking for winner
+  this.checkWinner = function() {
+
+  	 let winner = false;
+
+  	 const winningCombinations = [
+							        [0,1,2],
+							        [3,4,5],
+							        [6,7,8],
+							        [0,4,8],
+							        [2,4,6],
+							        [0,3,6],
+							        [1,4,7],
+							        [2,5,8]
+    										];
+
+      const positions = this.positions;
+
+      // checking for winning combinations
+	  winningCombinations.forEach((winningCombo) => {
+	  const pos0InnerText = positions[winningCombo[0]].innerText;
+	  const pos1InnerText = positions[winningCombo[1]].innerText;
+	  const pos2InnerText = positions[winningCombo[2]].innerText;
+	  const isWinningCombo = pos0InnerText !== '' &&
+	    pos0InnerText === pos1InnerText && pos1InnerText === pos2InnerText;
+	  if (isWinningCombo) {
+	      winner = true;
+	      winningCombo.forEach((index) => {
+	        positions[index].className += ' win';
+	      })
+	  }
+	});
+
+    return winner;
+
+  }
 }
 
 function Human(board){
   this.takeTurn = function(){
-   console.log('human')
+   board.positions.forEach(el => el.addEventListener('click', handleTurnTaken));
+
+  }
+
+  function handleTurnTaken(event){
+  	event.target.innerText = 'X';
+  	board.positions.forEach(el => el.removeEventListener('click', handleTurnTaken));
   }
 }
 
 function Computer(board){
 	this.takeTurn = function() {
-		console.log('computer')
+
+		// checking available positions after picking a spot
+		const positionsAvailable = board.positions.filter((p) => p.innerText === '' );
+		console.log(positionsAvailable)
+
+		// computer move
+		const move = Math.floor(Math.random() * positionsAvailable.length);
+		positionsAvailable[move].innerText = '0';
 	}
 }
