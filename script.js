@@ -17,15 +17,23 @@ function TicTacToeGame(){
 	let turn = 0;
 
 	this.start = function(){
+		const config = { childList: true};
+		const observer = new MutationObserver(() => takeTurn());
 
+		//observing/watching board positions at the start of the game.
+		board.positions.forEach((el) => observer.observe(el, config));      
+	}
+
+	function takeTurn() {
+		
 	}
 
 }
 
 
-
 function Board(){
-  // positions and game hanlders here
+  	// tracking board positions
+  this.positions = Array.from(document.querySelectorAll('.grid-item'));
 }
 
 function Human(){
