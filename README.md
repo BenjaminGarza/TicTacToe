@@ -2,7 +2,7 @@
  
    A JavaSript program that allows users to play a game of TicTacToe
  
-![]()
+![](screenshot.png)
  
 ## Built With
  
@@ -17,8 +17,12 @@ To get a local copy up and running follow these simple example steps.
 Clone the repo <br/>
 Open the html file in a browser <br/>
 
-## How to Play
 
+## How to Play
+Enter your name in the textbox <br/>
+Pick the square which you want to take on your turn <br/>
+A player wins when three squares are connected <br/>
+The Characters will change color when someone has won
  
  
 👤 **Sick-Carlito**
