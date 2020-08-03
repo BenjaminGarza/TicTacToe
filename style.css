@@ -3,6 +3,7 @@ html, body {
 }
 h3{
   color: #E21D2A;
+  text-shadow: 1px 1px 1px #000000;
 }
 
 section {
@@ -19,9 +20,9 @@ padding: 20px;
 
 input[type="text"]{
   text-align: center;
-  border: 2px solid #E21D2A;
+  border: 3px inset #E21D2A;
   border-radius: 4px;
-text-decoration-color: lime;
+  font-weight: bold;
 }
 
 input::placeholder{
@@ -29,9 +30,11 @@ input::placeholder{
 }
 
 button{
-   border-color: #1DE2D5;
-   border-radius: 4px;
-   background-color: #E21D2A;
+  border: 2px outset black;
+  border-radius: 4px;
+  color:white;
+  background-color: #E21D2A;
+  text-shadow: 1px 1px 0px #000000;
 }
 
 #grid-container {
