@@ -1,5 +1,8 @@
-body {
-  display: flexbox;
+html, body {
+  background-color: #1DE2D5;
+}
+h3{
+  color: #E21D2A;
 }
 
 section {
@@ -14,11 +17,28 @@ justify-content: center;
 padding: 20px;
 }
 
+input[type="text"]{
+  text-align: center;
+  border: 2px solid #E21D2A;
+  border-radius: 4px;
+text-decoration-color: lime;
+}
+
+input::placeholder{
+  color: black;
+}
+
+button{
+   border-color: #1DE2D5;
+   border-radius: 4px;
+   background-color: #E21D2A;
+}
+
 #grid-container {
   display: grid;
   grid-template-columns: auto auto auto;
   grid-gap: 10px;
-  background-color: #2196F3;
+  background-color: #E21D2A;
   padding: 10px;
 }
 
@@ -27,7 +47,12 @@ padding: 20px;
   text-align: center;
   padding: 40px 60px;
   font-size: 30px;
+  color: white;
+  text-shadow: 1px 1px 1px #000000;
+  box-shadow: -2px -2px #000000;
 }
+
+
 
 .win {
     color: green;
