@@ -50,13 +50,12 @@ button{
   text-align: center;
   padding: 40px 60px;
   font-size: 30px;
-  color: white;
   text-shadow: 1px 1px 1px #000000;
   box-shadow: -2px -2px #000000;
 }
-
-
-
+.grid-div{
+  color: white;
+}
 .win {
-    color: green;
+    color: #1DE2D5;
 }
