@@ -83,7 +83,8 @@ function Board(){
 	      winner = true;
 	      winningCombo.forEach((index) => {
 	        positions[index].className += ' win';
-	      })
+        })
+        alert('you have won');
 	  }
 	});
 
