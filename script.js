@@ -1,99 +1,124 @@
-// Main functions we are going to use!!
+const gameboard = (() => {
+  const turnCounter = 0;
+  const gameboardArray = [
+    ' ', ' ', ' ',
+    ' ', ' ', ' ',
+    ' ', ' ', ' ',
+  ];
+  return {
+    gameboardArray,
+    turnCounter,
+  };
+})();
 
-// initializing and starting the game
+const playerFactory = (name) => {
+  const getName = () => name;
+  return {
+    getName,
+  };
+};
 
-const ticTacToeGame = new TicTacToeGame();
-ticTacToeGame.start();
-
-// constractor functions to curry all the game's functionalities.
-// later, we will find a way to refactor this to use factory fubctions.
-function TicTacToeGame(){
-	const board = new Board();
-	const human = new Human(board);
-	const computer = new Computer(board);
-	let turn = 0;
-
-	this.start = function(){
-		const config = { childList: true};
-		const observer = new MutationObserver(() => takeTurn());
-		//observing/watching board positions at the start of the game.
-		board.positions.forEach((el) => observer.observe(el, config));
-		takeTurn();    
-	}
-
-	//function to controls turns between the players
-	function takeTurn() {
-		//stopping players to take another turn when the game is over.
-		if (board.checkWinner()) {
-			return;  
-		}
-		if (turn % 2 === 0) {
-			human.takeTurn();
-		} else {
-			computer.takeTurn();
-		}
-	turn++;
-	}
-}
-
-function Board(){
-  	// tracking board positions
-  this.positions = Array.from(document.querySelectorAll('.grid-item'));
-  // checking for winner
-  this.checkWinner = function() {
-  	 let winner = false;
-  	 const winningCombinations = [
-							        [0,1,2],
-							        [3,4,5],
-							        [6,7,8],
-							        [0,4,8],
-							        [2,4,6],
-							        [0,3,6],
-							        [1,4,7],
-							        [2,5,8]
-    										];
-			const positions = this.positions;
-			
-      // checking for winning combinations
-	  winningCombinations.forEach((winningCombo) => {
-	  const pos0InnerText = positions[winningCombo[0]].innerText;
-	  const pos1InnerText = positions[winningCombo[1]].innerText;
-	  const pos2InnerText = positions[winningCombo[2]].innerText;
-	  const isWinningCombo = pos0InnerText !== '' &&
-	    pos0InnerText === pos1InnerText && pos1InnerText === pos2InnerText;
-	  if (isWinningCombo) {
-	      winner = true;
-	      winningCombo.forEach((index) => {
-	        positions[index].className += ' win';
-        })
-        alert('you have won');
-	  }
-	});
-
-    return winner;
-
+const winMessage = (tie) => {
+  let player = '';
+  let player1 = document.querySelector('#player1');
+  let player2 = document.querySelector('#player2');
+  if (player1.value === '') { player1 = player1.placeholder; } else { player1 = player1.value; }
+  if (player2.value === '') { player2 = player2.placeholder; } else { player2 = player2.value; }
+  if (gameboard.turnCounter % 2 === 0) { player = player2; } else { player = player1; }
+  if (tie) {
+    document.querySelector('h3').textContent = 'YOU TIED';
+  } else {
+    document.querySelector('h3').textContent = `WINNER IS ${player.toUpperCase()}`;
   }
-}
+};
 
-function Human(board){
-  this.takeTurn = function(){
-   board.positions.forEach(el => el.addEventListener('click', handleTurnTaken));
+const renderGameboard = () => {
+  const gameArray = gameboard.gameboardArray;
+  const grid = document.querySelector('#grid-container').querySelectorAll('div');
+  for (let i = 0; i < 9; i += 1) {
+    if (gameArray[i] === 'X' || gameArray[i] === 'O' || gameArray[i] === ' ') {
+      grid[i].textContent = gameArray[i];
+    }
   }
+};
 
-  function handleTurnTaken(event){
-  	event.target.innerText = 'X';
-  	board.positions.forEach(el => el.removeEventListener('click', handleTurnTaken));
+const winCheck = () => {
+  const gameArray = gameboard.gameboardArray;
+  let won = false;
+  const winCombo = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+  ];
+
+  for (let i = 0; i < winCombo.length; i += 1) {
+    const winner = gameArray[winCombo[i][0]] === gameArray[winCombo[i][1]];
+    const winner2 = gameArray[winCombo[i][1]] === gameArray[winCombo[i][2]];
+    const test = gameArray[winCombo[i][0]] !== ' '
+          && gameArray[winCombo[i][1]] !== ' ';
+    if (winner && winner2 && test) {
+      const domArray = Array.from(document.querySelectorAll('.grid-item'));
+      domArray[winCombo[i][0]].className += ' win';
+      domArray[winCombo[i][1]].className += ' win';
+      domArray[winCombo[i][2]].className += ' win';
+      won = true;
+    }
   }
-}
+  return won;
+};
 
-function Computer(board){
-	this.takeTurn = function() {
-		// checking available positions after picking a spot
-		const positionsAvailable = board.positions.filter((p) => p.innerText === '' );
-		console.log(positionsAvailable)
+const addBoardEvents = () => {
+  const gridContainer = document.querySelector('#grid-container');
+  const gameArray = gameboard.gameboardArray;
+  gridContainer.addEventListener('click', (e) => {
+    const { index } = e.target.dataset;
+    if (e.target.innerHTML === '' || e.target.innerHTML === ' ') {
+			if (gameboard.turnCounter % 2 === 0) { gameArray[index] = ('X'); } else { gameArray[index] = ('O'); }
+			gameboard.turnCounter += 1;
+      renderGameboard();
+      const won = winCheck();
+      if (gameboard.turnCounter === 9 && !won) {
+        winMessage(true);
+      } else if (won) {
+        winMessage(false);
+      }
+    }
+  });
+};
 
-		// computer move
-		const move = Math.floor(Math.random() * positionsAvailable.length);
-		positionsAvailable[move].innerText = '0';
-	}
-}
+const startGame = () => {
+  addBoardEvents();
+  const player1Name = document.querySelector('#player1');
+  const player1 = playerFactory(player1Name);
+  const player2Name = document.querySelector('#player2');
+  const player2 = playerFactory(player2Name);
+  return {
+    player1,
+    player2,
+  };
+};
+
+const resetGame = () => {
+  document.querySelector('#btn-start').innerHTML = 'Restart';
+  const domArray = Array.from(document.querySelectorAll('.grid-item'));
+  for (let i = 0; i < gameboard.gameboardArray.length; i += 1) {
+    gameboard.gameboardArray[i] = ' ';
+    domArray[i].classList.remove('win');
+  }
+  document.querySelector('h3').textContent = 'TIC-TAC-TOE';
+  gameboard.turnCounter = 0;
+  renderGameboard();
+};
+
+const initialize = () => {
+  document.querySelector('#btn-start').addEventListener('click', () => {
+    startGame();
+    resetGame();
+  });
+};
+initialize();
