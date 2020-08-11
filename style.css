@@ -1,34 +1,47 @@
 body {
-  display: flexbox;
+  text-align: center;
 }
 
-section {
+.container {
   display: flex;
   justify-content: center;
-  flex-direction: column;
 }
 
-#score-board article {
-display: flex;
-justify-content: center;
-padding: 20px;
+#board {
+  border: 2px solid black;
+  display: flex;
+  flex-wrap: wrap;
+  height: 270px;
+  width: 245px;
+}
+/* 
+#board {
+
+  background-color: red;
+  justify-content: center;
+  height: 200px;
+  width: 245px;
+  gap: 3px;
+  display: flex;
+  flex-wrap: wrap
+} */
+
+.cell {
+  border: 2px solid black;
+  height: 80px;
+  width: 80px;
 }
 
-#grid-container {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  grid-gap: 10px;
-  background-color: #2196F3;
-  padding: 10px;
+.hidden {
+  display: none;
 }
 
-#grid-container div{
-  background-color: rgba(255, 255, 255, 0.8);
-  text-align: center;
-  padding: 40px 60px;
-  font-size: 30px;
+.player-info, .game-status {
+  width: 80%;
 }
 
-.win {
-    color: green;
+.column {
+  background-color: rgb(0, 204, 255);
+  border-color: black;
+  
 }

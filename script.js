@@ -1,118 +1,131 @@
-// Main functions we are going to use!!
+const playerFactory = (name, mark) => {
+  const playTurn = (board, cell) => {
+    const idx = board.cells.findIndex(position => position === cell);
+    if (board.boardArray[idx] === '') {
+      board.render();
+      return idx;
+    }
+    return null;
+  };
 
-// initializing and starting the game
+  return { name, mark, playTurn };
+};
 
-const ticTacToeGame = new TicTacToeGame();
-ticTacToeGame.start();
+const boardModule = (() => {
+  let boardArray = ['', '', '', '', '', '', '', '', ''];
+  const gameBoard = document.querySelector('#board');
+  const cells = Array.from(document.querySelectorAll('.cell'));
+  let winner = null;
 
+  const render = () => {
+    boardArray.forEach((mark, idx) => {
+      cells[idx].textContent = boardArray[idx];
+    });
+  };
 
+  const reset = () => {
+    boardArray = ['', '', '', '', '', '', '', '', ''];
+  };
 
-// constractor functions to curry all the game's functionalities.
-// later, we will find a way to refactor this to use factory fubctions.
-function TicTacToeGame(){
+  const checkWin = () => {
+    const winArrays = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
 
-	const board = new Board();
-	const human = new Human(board);
-	const computer = new Computer(board);
-	let turn = 0;
+    winArrays.forEach((combo) => {
+      if (boardArray[combo[0]]
+        && boardArray[combo[0]] === boardArray[combo[1]]
+        && boardArray[combo[0]] === boardArray[combo[2]]) {
+        winner = 'current';
+      }
+    });
+    return winner || (boardArray.includes('') ? null : 'Tie');
+  };
 
-	this.start = function(){
-		const config = { childList: true};
-		const observer = new MutationObserver(() => takeTurn());
+  return {
+    render, gameBoard, cells, boardArray, checkWin, reset,
+  };
+})();
 
-		//observing/watching board positions at the start of the game.
-		board.positions.forEach((el) => observer.observe(el, config));
-		takeTurn();    
-	}
+const gamePlay = (() => {
+  const playerOneName = document.querySelector('#player1');
+  const playerTwoName = document.querySelector('#player2');
+  const form = document.querySelector('.player-info');
+  const resetBtn = document.querySelector('#reset');
+  let currentPlayer;
+  let playerOne;
+  let playerTwo;
 
-	//function to controls turns between the players
+  const switchTurn = () => {
+    currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
+  };
 
-	function takeTurn() {
+  const gameRound = () => {
+    const board = boardModule;
+    const gameStatus = document.querySelector('.game-status');
+    if (currentPlayer.name !== '') {
+      gameStatus.textContent = `${currentPlayer.name}'s Turn`;
+    } else {
+      gameStatus.textContent = 'Board: ';
+    }
 
-		//stopping players to take another turn when the game is over.
-		if (board.checkWinner()) {
-			return;  
-		}
+    board.gameBoard.addEventListener('click', (event) => {
+      event.preventDefault();
+      const play = currentPlayer.playTurn(board, event.target);
+      if (play !== null) {
+        board.boardArray[play] = `${currentPlayer.mark}`;
+        board.render();
+        const winStatus = board.checkWin();
+        if (winStatus === 'Tie') {
+          gameStatus.textContent = 'Tie!';
+        } else if (winStatus === null) {
+          switchTurn();
+          gameStatus.textContent = `${currentPlayer.name}'s Turn`;
+        } else {
+          gameStatus.textContent = `Winner is ${currentPlayer.name}`;
+          board.reset();
+          board.render();
+        }
+      }
+    });
+  };
 
-		if (turn % 2 === 0) {
-			human.takeTurn();
-		} else {
-			computer.takeTurn();
-		}
+  const gameInit = () => {
+    if (playerOneName.value !== '' && playerTwoName.value !== '') {
+      playerOne = playerFactory(playerOneName.value, 'X');
+      playerTwo = playerFactory(playerTwoName.value, 'O');
+      currentPlayer = playerOne;
+      gameRound();
+    }
+  };
 
-	turn++;
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (playerOneName.value !== '' && playerTwoName.value !== '') {
+      gameInit();
+      form.classList.add('hidden');
+      document.querySelector('.place').classList.remove('hidden');
+    } else {
+      window.location.reload();
+    }
+  });
 
-	}
-}
+  resetBtn.addEventListener('click', () => {
+    document.querySelector('.game-status').textContent = 'Board: ';
+    document.querySelector('#player1').value = '';
+    document.querySelector('#player2').value = '';
+    window.location.reload();
+  });
+  return {
+    gameInit,
+  };
+})();
 
-	
-
-
-
-
-function Board(){
-  	// tracking board positions
-  this.positions = Array.from(document.querySelectorAll('.grid-item'));
-
-  // checking for winner
-  this.checkWinner = function() {
-
-  	 let winner = false;
-
-  	 const winningCombinations = [
-							        [0,1,2],
-							        [3,4,5],
-							        [6,7,8],
-							        [0,4,8],
-							        [2,4,6],
-							        [0,3,6],
-							        [1,4,7],
-							        [2,5,8]
-    										];
-
-      const positions = this.positions;
-
-      // checking for winning combinations
-	  winningCombinations.forEach((winningCombo) => {
-	  const pos0InnerText = positions[winningCombo[0]].innerText;
-	  const pos1InnerText = positions[winningCombo[1]].innerText;
-	  const pos2InnerText = positions[winningCombo[2]].innerText;
-	  const isWinningCombo = pos0InnerText !== '' &&
-	    pos0InnerText === pos1InnerText && pos1InnerText === pos2InnerText;
-	  if (isWinningCombo) {
-	      winner = true;
-	      winningCombo.forEach((index) => {
-	        positions[index].className += ' win';
-	      })
-	  }
-	});
-
-    return winner;
-
-  }
-}
-
-function Human(board){
-  this.takeTurn = function(){
-   board.positions.forEach(el => el.addEventListener('click', handleTurnTaken));
-
-  }
-
-  function handleTurnTaken(event){
-  	event.target.innerText = 'X';
-  	board.positions.forEach(el => el.removeEventListener('click', handleTurnTaken));
-  }
-}
-
-function Computer(board){
-	this.takeTurn = function() {
-
-		// checking available positions after picking a spot
-		const positionsAvailable = board.positions.filter((p) => p.innerText === '' );
-		console.log(positionsAvailable)
-
-		// computer move
-		const move = Math.floor(Math.random() * positionsAvailable.length);
-		positionsAvailable[move].innerText = '0';
-	}
-}
+gamePlay.gameInit();
