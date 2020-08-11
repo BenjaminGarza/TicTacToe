@@ -78,8 +78,8 @@ const addBoardEvents = () => {
   gridContainer.addEventListener('click', (e) => {
     const { index } = e.target.dataset;
     if (e.target.innerHTML === '' || e.target.innerHTML === ' ') {
-			if (gameboard.turnCounter % 2 === 0) { gameArray[index] = ('X'); } else { gameArray[index] = ('O'); }
-			gameboard.turnCounter += 1;
+      if (gameboard.turnCounter % 2 === 0) { gameArray[index] = ('X'); } else { gameArray[index] = ('O'); }
+      gameboard.turnCounter += 1;
       renderGameboard();
       const won = winCheck();
       if (gameboard.turnCounter === 9 && !won) {
