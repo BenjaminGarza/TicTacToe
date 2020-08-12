@@ -1,14 +1,22 @@
 {
     "env": {
-        "browser": true,
-        "es2020": true
+      "browser": true,
+      "es6": true,
+      "jest": true
     },
-    "extends": [
-        "airbnb-base"
-    ],
     "parserOptions": {
-        "ecmaVersion": 11
+      "ecmaVersion": 2018,
+      "sourceType": "module"
     },
+    "extends": ["airbnb-base"],
     "rules": {
-    }
-}
+      "no-shadow": "off",
+      "no-param-reassign": "off",
+      "eol-last": "off",
+      "arrow-parens": "off"
+    },
+    "ignorePatterns": [
+      "dist/",
+      "build/"
+    ]
+  }
