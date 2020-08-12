@@ -66,31 +66,37 @@ const winCheck = () => {
       domArray[winCombo[i][0]].className += ' win';
       domArray[winCombo[i][1]].className += ' win';
       domArray[winCombo[i][2]].className += ' win';
+      removeBoardEvents();
       won = true;
     }
   }
   return won;
 };
+const boardEvents = (e) => {
+  const gameArray = gameboard.gameboardArray;
+  const { index } = e.target.dataset;
+if (e.target.innerHTML === '' || e.target.innerHTML === ' ') {
+  if (gameboard.turnCounter % 2 === 0) { gameArray[index] = ('X'); } else { gameArray[index] = ('O'); }
+  gameboard.turnCounter += 1;
+  renderGameboard();
+  const won = winCheck();
+  if (gameboard.turnCounter === 9 && !won) {
+    winMessage(true);
+  } else if (won) {
+    winMessage(false);
+  }
+}
+};
 
 const addBoardEvents = () => {
   const gridContainer = document.querySelector('#grid-container');
-  const gameArray = gameboard.gameboardArray;
-  gridContainer.addEventListener('click', (e) => {
-    const { index } = e.target.dataset;
-    if (e.target.innerHTML === '' || e.target.innerHTML === ' ') {
-      if (gameboard.turnCounter % 2 === 0) { gameArray[index] = ('X'); } else { gameArray[index] = ('O'); }
-      gameboard.turnCounter += 1;
-      renderGameboard();
-      const won = winCheck();
-      if (gameboard.turnCounter === 9 && !won) {
-        winMessage(true);
-      } else if (won) {
-        winMessage(false);
-      }
-    }
-  });
+  gridContainer.addEventListener('click', boardEvents);
 };
 
+const removeBoardEvents = () => {
+  const gridContainer = document.querySelector('#grid-container');
+  gridContainer.removeEventListener('click', boardEvents);
+};
 const startGame = () => {
   addBoardEvents();
   const player1Name = document.querySelector('#player1');
