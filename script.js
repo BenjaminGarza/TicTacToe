@@ -22,8 +22,8 @@ const winMessage = (tie) => {
   let player = '';
   let player1 = document.querySelector('#player1');
   let player2 = document.querySelector('#player2');
-  if (player1.value === '') { player1 = player1.placeholder; } else { player1 = player1.value; }
-  if (player2.value === '') { player2 = player2.placeholder; } else { player2 = player2.value; }
+  if (player1.value === '') { player1 = 'PLAYER 1'; } else { player1 = player1.value; }
+  if (player2.value === '') { player2 = 'Player 2'; } else { player2 = player2.value; }
   if (gameboard.turnCounter % 2 === 0) { player = player2; } else { player = player1; }
   if (tie) {
     document.querySelector('h3').textContent = 'YOU TIED';
