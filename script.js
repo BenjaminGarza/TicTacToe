@@ -71,12 +71,20 @@ const winCheck = () => {
   }
   return won;
 };
-const boardEvents = (e) => {
+
+
+const boardEventsLogic = (e) => {
   const gameArray = gameboard.gameboardArray;
   const { index } = e.target.dataset;
-  if (e.target.innerHTML === '' || e.target.innerHTML === ' ') {
+  if (index !== undefined) {
     if (gameboard.turnCounter % 2 === 0) { gameArray[index] = ('X'); } else { gameArray[index] = ('O'); }
     gameboard.turnCounter += 1;
+  }
+};
+
+const boardEvents = (e) => {
+  boardEventsLogic(e);
+  if (e.target.innerHTML === '' || e.target.innerHTML === ' ') {
     renderGameboard();
     const won = winCheck();
     if (gameboard.turnCounter === 9 && !won) {
@@ -124,8 +132,8 @@ const resetLogic = () => {
 };
 
 const resetGame = () => {
-  resetDom();
   resetLogic();
+  resetDom();
 };
 
 const initialize = () => {
