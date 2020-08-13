@@ -106,16 +106,26 @@ const startGame = () => {
   };
 };
 
-const resetGame = () => {
+const resetDom = () => {
   document.querySelector('#btn-start').innerHTML = 'Restart';
   const domArray = Array.from(document.querySelectorAll('.grid-item'));
   for (let i = 0; i < gameboard.gameboardArray.length; i += 1) {
-    gameboard.gameboardArray[i] = ' ';
     domArray[i].classList.remove('win');
   }
   document.querySelector('h3').textContent = 'TIC-TAC-TOE';
-  gameboard.turnCounter = 0;
   renderGameboard();
+};
+
+const resetLogic = () => {
+  for (let i = 0; i < gameboard.gameboardArray.length; i += 1) {
+    gameboard.gameboardArray[i] = ' ';
+  }
+  gameboard.turnCounter = 0;
+};
+
+const resetGame = () => {
+  resetDom();
+  resetLogic();
 };
 
 const initialize = () => {
