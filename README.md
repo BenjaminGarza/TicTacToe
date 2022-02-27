@@ -1,6 +1,6 @@
 # TicTacToe
  
-   A JavaSript program that allows users to play a game of TicTacToe
+   A JavaScript program that allows users to play a game of TicTacToe
  
 ![](screenshot.png)
  
